@@ -1,21 +1,19 @@
 // import { handleAuth } from "@kinde-oss/kinde-auth-nextjs/server";
 
 // export const GET = handleAuth();
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { handleAuth } from "@kinde-oss/kinde-auth-nextjs/server";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  // Set CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Replace '*' with your domain if necessary
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  // Handle the preflight request
+export async function GET(req: NextRequest) {
+  const res = NextResponse.next(); // Create a NextResponse object to manage the response
+  res.headers.set("Access-Control-Allow-Origin", "*"); // Replace '*' with your domain if necessary
+  res.headers.set("Access-Control-Allow-Methods", "GET,OPTIONS");
+  res.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
   if (req.method === "OPTIONS") {
-    res.status(200).end();
-    return;
+    return new NextResponse(null, { status: 200 });
   }
-
-  // Continue with the authentication handling
   return handleAuth()(req, res);
 }
