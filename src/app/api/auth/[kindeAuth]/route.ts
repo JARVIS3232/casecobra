@@ -5,15 +5,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { handleAuth } from "@kinde-oss/kinde-auth-nextjs/server";
 
 export async function GET(req: NextRequest) {
-  const res = NextResponse.next(); // Create a NextResponse object to manage the response
-  res.headers.set("Access-Control-Allow-Origin", "*"); // Replace '*' with your domain if necessary
-  res.headers.set("Access-Control-Allow-Methods", "GET,OPTIONS");
-  res.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-  if (req.method === "OPTIONS") {
-    return new NextResponse(null, { status: 200 });
+  try {
+    const res = NextResponse.next();
+
+    // Set CORS headers
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+
+    // Handle preflight OPTIONS request
+    if (req.method === "OPTIONS") {
+      return new NextResponse(null, { status: 200 });
+    }
+
+    // Handle authentication (assuming kindeAuth is handled in the library)
+    return await handleAuth()(req, res);
+  } catch (error) {
+    console.error("Error in auth route:", error);
+    return new NextResponse("Authentication error", { status: 500 });
   }
-  return handleAuth()(req, res);
 }
