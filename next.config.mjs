@@ -3,29 +3,27 @@ const nextConfig = {
   images: {
     domains: ["utfs.io"],
   },
-};
-
-export default nextConfig;
-module.exports = {
   async headers() {
     return [
       {
-        // matching all API routes
-        source: "/api/:path*",
+        source: "/(.*)", // Apply to all routes
         headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://casecobra-eight-delta.vercel.app", // Replace with your domain
+          },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
           },
           {
             key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+            value: "Content-Type, Authorization",
           },
         ],
       },
     ];
   },
 };
+
+export default nextConfig;
